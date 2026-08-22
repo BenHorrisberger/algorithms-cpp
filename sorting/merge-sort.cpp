@@ -1,37 +1,49 @@
 #include <iostream>
-#include <array>
+#include <vector>
+#include <span>
 #include <algorithm>
 
-// need merge_sort and merge_arrays funcitons
-// ==========================================
-// THOUGHTS --
-// need a way to initialize std::array size as a variable.
-
-void merge_sort(std::array<int, 8>& arr)
-{
-    return;
-}
-
-void print_array(std::array<int, 8>& arr)
-{
-    for (int element : arr)
-    {
-        std::cout << element << ' ';
-    }
-    std::cout << "\n";
-}
+void merge_sort_vector(std::span<int> input);
+void recursive_routine(std::span<int> data, std::span<int> buffer);
 
 int main()
 {
-    std::array<int, 8> main_array {1,2,3,4,5,6,7,8};
-    std::array<int, 4> main_sub_array;
-    std::copy(main_array.begin(), main_array.begin() + 4, main_sub_array.begin());
-
-    for (int element : main_sub_array)
+    std::vector main_vec {2,4,6,3,1,5,7};
+    merge_sort_vector(main_vec);
+    for (int value : main_vec)
     {
-        std::cout << element << ' ';
+         std::cout << value << ' ';
     }
     std::cout << "\n";
-
     return 0;
+}
+
+void merge_sort_vector(std::span<int> input)
+{
+    std::vector<int> input_copy(input.begin(), input.end());
+    std::vector<int> write_buffer(input.size());
+    recursive_routine(input_copy, write_buffer);
+    std::copy(input_copy.begin(), input_copy.end(), input.begin()); 
+
+    return;
+}
+
+void recursive_routine(std::span<int> data, std::span<int> buffer)
+{
+    std::size_t data_len = data.size();
+    if (data_len <= 1)
+    {
+        return;
+    }
+
+    unsigned int mid_index = data_len / 2;
+    std::span left = data.subspan(0, mid_index);
+    std::span right = data.subspan(mid_index, data_len-mid_index);
+    
+    recursive_routine(left, buffer);
+    recursive_routine(right, buffer);
+
+    std::merge(left.begin(), left.end(), right.begin(), right.end(), buffer.begin());
+    std::copy_n(buffer.begin(), data_len, data.begin());
+    return;
 }

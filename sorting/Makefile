@@ -7,4 +7,4 @@ merge-sort: merge-sort.cpp
 .PHONEY: clean
 
 clean:
-	rm insertion-sort
+	rm -f insertion-sort merge-sort
